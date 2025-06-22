@@ -1,11 +1,10 @@
-import express from "express";
+const express = require("express");
+const { handleHelloWord, handleUserPage } = require('../controller/homeController');
 
 const router = express.Router();
 
-const initWebRoutes = (app) => {
-    router.get("/", (req, res) => {
-        return res.send("hello Duong");
-    })
-    return app.use("/", router);
-}
-export default initWebRoutes;
+router.get("/", handleHelloWord);
+router.get("/user", handleUserPage);
+
+
+module.exports = router;
