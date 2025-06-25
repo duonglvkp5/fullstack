@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const mysql = require('mysql2/promise');
 const bluebird = require('bluebird');
+const db = require('../models/index');
 // create the connection, specify bluebird as Promise
 
 const salt = bcrypt.genSaltSync(10);
@@ -11,19 +12,21 @@ const hashUserPassword = (userPassword) => {
 }
 const createNewUser = async (email, password, username) => {
     let hashPass = await hashUserPassword(password);
-    const connection = await mysql.createConnection({ host: 'localhost', user: 'root', database: 'fullstack', Promise: bluebird });
     try {
-        const [rows, fields] = await connection.execute('INSERT INTO users (email, password, username) VALUES (?, ?, ?)', [email, hashPass, username]);
-        return rows;
+        await db.User.create({
+            username: username,
+            email: email,
+            password: hashPass
+        })
     } catch (error) {
         console.log("check: ", error)
     }
 }
 const getUserList = async () => {
     const connection = await mysql.createConnection({ host: 'localhost', user: 'root', database: 'fullstack', Promise: bluebird });
-    let users = [];
+    let user = [];
     try {
-        const [rows, fields] = await connection.execute('Select * from users ');
+        const [rows, fields] = await connection.execute('Select * from user ');
         return rows;
     } catch (error) {
         console.log("check: ", error)
@@ -32,7 +35,7 @@ const getUserList = async () => {
 const deleteUser = async (id) => {
     const connection = await mysql.createConnection({ host: 'localhost', user: 'root', database: 'fullstack', Promise: bluebird });
     try {
-        const [rows, fields] = await connection.execute('DELETE FROM users WHERE id = ?', [id]);
+        const [rows, fields] = await connection.execute('DELETE FROM user WHERE id = ?', [id]);
         return rows;
     } catch (error) {
         console.log("check: ", error)
@@ -41,7 +44,7 @@ const deleteUser = async (id) => {
 const getUserById = async (id) => {
     const connection = await mysql.createConnection({ host: 'localhost', user: 'root', database: 'fullstack', Promise: bluebird });
     try {
-        const [rows, fields] = await connection.execute('Select * from users WHERE id = ?', [id]);
+        const [rows, fields] = await connection.execute('Select * from user WHERE id = ?', [id]);
         return rows;
     } catch (error) {
         console.log("check: ", error)
@@ -50,7 +53,7 @@ const getUserById = async (id) => {
 const updateUserInfor = async (email, username, id) => {
     const connection = await mysql.createConnection({ host: 'localhost', user: 'root', database: 'fullstack', Promise: bluebird });
     try {
-        const [rows, fields] = await connection.execute('UPDATE users SET email = ?, username = ? WHERE id = ?', [email, username, id]);
+        const [rows, fields] = await connection.execute('UPDATE user SET email = ?, username = ? WHERE id = ?', [email, username, id]);
         return rows;
     } catch (error) {
         console.log("check: ", error)
