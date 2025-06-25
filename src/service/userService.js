@@ -23,40 +23,23 @@ const createNewUser = async (email, password, username) => {
     }
 }
 const getUserList = async () => {
-    const connection = await mysql.createConnection({ host: 'localhost', user: 'root', database: 'fullstack', Promise: bluebird });
-    let user = [];
-    try {
-        const [rows, fields] = await connection.execute('Select * from user ');
-        return rows;
-    } catch (error) {
-        console.log("check: ", error)
-    }
+    let users = [];
+    users = await db.User.findAll();
+    return users;
 }
-const deleteUser = async (id) => {
-    const connection = await mysql.createConnection({ host: 'localhost', user: 'root', database: 'fullstack', Promise: bluebird });
-    try {
-        const [rows, fields] = await connection.execute('DELETE FROM user WHERE id = ?', [id]);
-        return rows;
-    } catch (error) {
-        console.log("check: ", error)
-    }
+const deleteUser = async (userId) => {
+    await db.User.destroy({
+        where: { id: userId }
+    })
 }
 const getUserById = async (id) => {
-    const connection = await mysql.createConnection({ host: 'localhost', user: 'root', database: 'fullstack', Promise: bluebird });
-    try {
-        const [rows, fields] = await connection.execute('Select * from user WHERE id = ?', [id]);
-        return rows;
-    } catch (error) {
-        console.log("check: ", error)
-    }
+    let user = {};
+    user = await db.User.findOne({
+        where: { id: id }
+    })
+    return user = user.get({ plain: true });
 }
 const updateUserInfor = async (email, username, id) => {
-    const connection = await mysql.createConnection({ host: 'localhost', user: 'root', database: 'fullstack', Promise: bluebird });
-    try {
-        const [rows, fields] = await connection.execute('UPDATE user SET email = ?, username = ? WHERE id = ?', [email, username, id]);
-        return rows;
-    } catch (error) {
-        console.log("check: ", error)
-    }
+    await db.User.update({ email: email, username: username }, { where: { id: id } });
 }
 module.exports = { createNewUser, getUserList, deleteUser, getUserById, updateUserInfor }
