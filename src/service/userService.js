@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const mysql = require('mysql2/promise');
 const bluebird = require('bluebird');
 const db = require('../models/index');
+const { where } = require('sequelize/lib/sequelize');
 // create the connection, specify bluebird as Promise
 
 const salt = bcrypt.genSaltSync(10);
@@ -23,6 +24,28 @@ const createNewUser = async (email, password, username) => {
     }
 }
 const getUserList = async () => {
+
+    let newUser = await db.User.findOne({
+        where: { id: 1 },
+        attributes: ["id", "username", "email"],
+        include: { model: db.Group, attributes: ["id", "name", "description"] },
+        raw: true,
+        nest: true
+    })
+    // let roles = await db.Group.findOne({
+    //     where: { id: 1 },
+    //     include: [{ model: db.Role }],
+    //     raw: true,
+    //     nest: true
+    // })
+    let roles = await db.Role.findAll({
+        include: { model: db.Group, where: { id: 1 } },
+        raw: true,
+        nest: true
+    })
+    console.log("show: ", newUser)
+    console.log("show role: ", roles)
+
     let users = [];
     users = await db.User.findAll();
     return users;
