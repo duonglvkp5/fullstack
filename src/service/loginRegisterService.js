@@ -42,9 +42,7 @@ const registerNewUser = async (rawUserData) => {
                 EC: 1
             }
         }
-
         let hashPassword = hashUserPassword(rawUserData.password);
-
         await db.User.create({
             email: rawUserData.email,
             username: rawUserData.username,
@@ -52,7 +50,6 @@ const registerNewUser = async (rawUserData) => {
             phone: rawUserData.phone,
 
         })
-
         return {
             EM: 'A user is created successfully!',
             EC: '0'
@@ -63,6 +60,5 @@ const registerNewUser = async (rawUserData) => {
             EC: -2
         }
     }
-
 }
 module.exports = { registerNewUser }
