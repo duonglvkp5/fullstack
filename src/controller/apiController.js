@@ -1,4 +1,4 @@
-const { registerNewUser } = require('../service/loginRegisterService');
+const { registerNewUser, handleUserLogin } = require('../service/loginRegisterService');
 
 const testApi = (req, res) => {
     return res.status(200).json({
@@ -40,11 +40,20 @@ const handleRegister = async (req, res) => {
     console.log("call me", req.body)
 }
 const handleLogin = async (req, res) => {
-    console.log("login", req.body)
-    return res.status(200).json({
-        message: 'ok',
-        data: 'test api login'
-    })
+    try {
+        let data = await handleUserLogin(req.body);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT,
+        })
+    } catch (error) {
+        return res.status(500).json({
+            EM: 'error from server',
+            EC: '-1',
+            DT: '',
+        })
+    }
 }
 module.exports = {
     testApi, handleRegister, handleLogin
