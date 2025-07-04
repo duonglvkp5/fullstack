@@ -11,7 +11,6 @@ const readFunc = async (req, res) => {
                 EC: data.EC,
                 DT: data.DT,
             })
-            console.log(">>", 'page: ', page, 'limit: ', limit)
         } else {
             let data = await getAllUser();
             return res.status(200).json({
@@ -21,12 +20,22 @@ const readFunc = async (req, res) => {
             })
         }
     } catch (e) {
-        console.log(e)
+        console.log(e);
+        return res.status(500).json({
+            EM: 'error from server',
+            EC: '-1',
+            DT: '',
+        })
     }
 }
 const createFunc = async (req, res) => {
     try {
-
+        let data = await updateUser(req.body);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT,
+        })
     } catch (error) {
         console.log(error);
         return res.status(500).json({
@@ -36,9 +45,14 @@ const createFunc = async (req, res) => {
         })
     }
 }
-const updateFunc = (req, res) => {
+const updateFunc = async (req, res) => {
     try {
-
+        let data = await updateUser(req.body);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT,
+        })
     } catch (error) {
         console.log(error);
         return res.status(500).json({
